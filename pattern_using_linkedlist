@@ -1,0 +1,146 @@
+#include<iostream>
+using namespace std;
+
+struct Node
+{
+    int data ;
+    struct Node *next ;
+};
+
+// add elements to the list
+
+void append(struct Node **head, int value)
+{
+    struct Node *newnode = new Node;
+    Node *last = *head;
+    
+    newnode->data = value;
+    newnode->next = NULL;
+    
+    if(*head == NULL)
+    {
+        *head = newnode;
+    }
+    else
+    {
+        while(last->next != NULL)
+        {
+         last = last->next;   
+        }
+    last->next = newnode;
+    }
+}
+
+void print_linked_list(struct Node **head)
+{
+    Node *temp = *head;
+    
+    while(temp != NULL)
+    {
+        cout << temp->data << " ";
+        temp = temp->next;
+    }
+}
+
+void reverse_linked_list(struct Node **head)
+{
+
+    //reversing the splitted (2nd ) linked list items
+    
+    Node *prev = NULL;
+    Node *current = *head;
+    Node *temp;
+    
+    while(current)
+    {
+      temp = current->next;
+      current->next = prev;
+      prev = current;
+      current = temp;
+    }
+    
+    *head = prev;
+    
+}
+
+
+Node *dummy_node(int key)
+{
+    Node *temp = new Node;
+    temp->data=key;
+    temp->next=NULL;
+    return temp;
+}
+
+void rearraneg(struct Node **head)
+{
+    //split the linked list into two part
+    // Find the middle elements
+    
+    Node *slow= *head;
+    Node *fast = slow->next;
+    
+    while(fast && fast->next)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    
+    Node *head1 = *head;
+    Node *head2 = slow->next;
+    
+    slow->next = NULL;
+    // reverse the second linked list
+    reverse_linked_list(&head2);
+    
+    // merging the linked list using dummy Node;
+    
+    *head = dummy_node(0); // assigning value to dummy_node;
+    
+    Node *current = *head;
+    
+    while(head1 || head2)
+    {
+        if(head1)
+        {
+            current->next = head1;
+            current = current->next;
+            head1 = head1->next;
+        }
+        
+        if(head2)
+        {
+            current->next = head2;
+            current = current->next;
+            head2 = head2->next;
+        }
+    }
+    *head = (*head)->next;
+}
+
+
+int main()
+{
+    struct Node *head = NULL;
+    int size;
+    cout << " Enter the number of elements"<<endl;
+    cin >> size;
+    
+    int i,x;
+    
+    for(i=0;i<size;i++)
+    {
+        cout<< "Enter the elements : "<< i+1 <<endl;
+        cin>>x;
+        append(&head,x);
+    }
+    cout<<"The elements are : ";
+    cout<<endl;
+    print_linked_list(&head);
+    
+    rearraneg(&head);
+    
+    cout<<"Rearrange Linked list are : "<<endl;
+    print_linked_list(&head);
+    
+}
